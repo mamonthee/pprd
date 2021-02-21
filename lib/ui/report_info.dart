@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pprd/network/api_service.dart';
+import 'package:pprd/network/model/api_model.dart';
+import 'package:provider/provider.dart';
 
 class ReportInfo extends StatelessWidget {
   Widget ReportList(){
@@ -22,23 +25,23 @@ class ReportInfo extends StatelessWidget {
   Widget AlertInfo(){
     return Container(
       width: 400,
-      height: 150,
+      height: 100,
       // padding: EdgeInsets.only(top: 50),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            offset: Offset(2,2),
-            color: Colors.grey,
-            blurRadius: 2,
-            spreadRadius: 1
-          )
-        ]
+        // borderRadius: BorderRadius.circular(10),
+        // boxShadow: [
+          // BoxShadow(
+            // offset: Offset(2,2),
+            // color: Colors.grey,
+            // blurRadius: 1,
+            // spreadRadius: 1
+          // )
+        // ]
       ),
       child: Card(
         color: Colors.white,
         shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+        // borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -54,10 +57,16 @@ class ReportInfo extends StatelessWidget {
   }
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return 
+    // Container(
+    //   width: 200,
+    //   height: 300,
+    //   child: _listFutureApi(context)
+    // )   
+        Expanded(
       child: Container(
         // alignment: Alignment.topRight,
-        // width: 625,
+        width: 625,
         height: double.infinity,
         color: Colors.blue[200],
         child: Column(
@@ -66,11 +75,65 @@ class ReportInfo extends StatelessWidget {
               padding: const EdgeInsets.only(top:8.0),
               child: Text("REPORT",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 26)),
             ),
-            ReportList(),
+            Container(
+                width: 900,
+                height: 550,
+                color: Colors.white,
+              child: _listFutureApi(context),
+            ),
+            // ReportList(),
+             
             AlertInfo()
+            
           ],
+        
         ),
       ),
-    );
+      
+    )
+    ;
+  }
+  FutureBuilder _listFutureApi(BuildContext context){
+    return FutureBuilder<List<ApiModel>>(
+      future: Provider.of<ApiService>(context,listen:false).getApi(),
+      builder: (BuildContext context, AsyncSnapshot<List<ApiModel>> snapshot){
+        if(snapshot.connectionState == ConnectionState.done){
+            if(snapshot.hasError){
+              return Container(
+                child: Center(
+                  child: Text("Something went wrong"),
+                  )
+              );
+            
+            }
+              final getApi = snapshot.data;
+              return listReport(context : context, getApi : getApi);
+              // return ReportList();
+        }else{
+           return Container(
+            child: Center(
+              child: CircularProgressIndicator()
+            ),
+         );
+        }
+
+      },
+      );
+  }
+  
+    ListView listReport({BuildContext context,List<ApiModel> getApi}){
+    return ListView.builder(
+      itemCount: 20,
+      itemBuilder : (BuildContext context,int index){
+        return Card(
+          child:Container(
+             padding: EdgeInsets.all(10.0),
+            child: ListTile(
+              leading: Text("Title"),
+              title: Text(getApi[index].title),
+              ),
+    ),
+        );
+      });
   }
 }

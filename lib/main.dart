@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pprd/ui/home.dart';
+import 'package:provider/provider.dart';
+
+import 'network/api_service.dart';
 void main() {
   runApp(MyApp());
 }
@@ -9,7 +12,8 @@ class MyApp extends StatelessWidget {
   String _now = DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now());
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return Provider(create: (context) => ApiService.create(),
+    child:MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       // theme: ThemeData(
@@ -34,6 +38,7 @@ class MyApp extends StatelessWidget {
         ),
         body: HomePage(),
       ),
+    )
     );
   }
 }

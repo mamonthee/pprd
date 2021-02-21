@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pprd/ui/user_info.dart';
+
 
 class HomeInfo extends StatelessWidget {
   Widget UserInfo(){
